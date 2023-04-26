@@ -23,6 +23,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
+import { Persona } from "./persona";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -108,6 +109,7 @@ export function SideBar(props: { className?: string }) {
         }}
       >
         <ChatList narrow={shouldNarrow} />
+        <Persona />
       </div>
 
       <div className={styles["sidebar-tail"]}>

@@ -12,6 +12,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelType, useAppConfig } from "./config";
+import { StaticImageData } from "next/image";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -19,6 +20,7 @@ export type Message = ChatCompletionResponseMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  isPreset?: boolean;
 };
 
 export function createMessage(override: Partial<Message>): Message {
@@ -29,6 +31,12 @@ export function createMessage(override: Partial<Message>): Message {
     content: "",
     ...override,
   };
+}
+
+export function createPresetMessage(override: Partial<Message>): Message {
+  const message = createMessage(override);
+  message.isPreset = true;
+  return message;
 }
 
 export const ROLES: Message["role"][] = ["system", "user", "assistant"];
@@ -49,6 +57,7 @@ export interface ChatSession {
   stat: ChatStat;
   lastUpdate: string;
   lastSummarizeIndex: number;
+  avatarUrl: string;
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -77,6 +86,16 @@ function createEmptySession(): ChatSession {
   };
 }
 
+function createPresetSession(
+  avatarUrl: string,
+  presetMessage: Message,
+): ChatSession {
+  const presetSession = createEmptySession();
+  presetSession.avatarUrl = avatarUrl;
+  presetSession.context.push(presetMessage);
+  return presetSession;
+}
+
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
@@ -85,6 +104,10 @@ interface ChatStore {
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
   newSession: () => void;
+  newPresetSession: (
+    avatarUrl: string | StaticImageData,
+    message: Message,
+  ) => void;
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
@@ -183,6 +206,15 @@ export const useChatStore = create<ChatStore>()(
         set((state) => ({
           currentSessionIndex: 0,
           sessions: [createEmptySession()].concat(state.sessions),
+        }));
+      },
+
+      newPresetSession(avatarUrl: string, message: Message) {
+        set((state) => ({
+          currentSessionIndex: 0,
+          sessions: [createPresetSession(avatarUrl, message)].concat(
+            state.sessions,
+          ),
         }));
       },
 

@@ -1,0 +1,32 @@
+.persona-list {
+    display: flex;
+}
+
+
+.persona-item {
+    display: inline-block;
+    height: 48px;
+    padding: 5px;
+    margin: 5px;
+    background-color: var(--white);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: var(--card-shadow);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    &:hover {
+        background-color: var(--hover-color);
+    }
+    &:first-child {
+        margin-left: 0;
+    }
+  
+    &:last-child {
+        margin-right: 0;
+    }
+}
+

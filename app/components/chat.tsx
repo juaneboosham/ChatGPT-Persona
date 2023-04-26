@@ -57,6 +57,7 @@ import chatStyle from "./chat.module.scss";
 import { Input, Modal, showModal } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../constant";
+import Image from "next/image";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -69,10 +70,26 @@ const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
 });
 
-export function Avatar(props: { role: Message["role"]; model?: ModelType }) {
+export function Avatar(props: {
+  role: Message["role"];
+  model?: ModelType;
+  avatarUrl?: string;
+}) {
   const config = useAppConfig();
 
   if (props.role !== "user") {
+    if (props.avatarUrl) {
+      return (
+        <div className={styles["user-avtar"]}>
+          <Image
+            src={props.avatarUrl}
+            alt="Picture of the author"
+            width={48}
+            height={48}
+          />
+        </div>
+      );
+    }
     return (
       <div className="no-dark">
         {props.model?.startsWith("gpt-4") ? (
@@ -585,6 +602,7 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
+  console.log("new session context", session.context);
   const context: RenderMessage[] = session.context.slice();
 
   const accessStore = useAccessStore();
@@ -628,7 +646,8 @@ export function Chat() {
             },
           ]
         : [],
-    );
+    )
+    .filter((message) => !message.isPreset);
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 
@@ -739,7 +758,11 @@ export function Chat() {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} model={message.model} />
+                  <Avatar
+                    role={message.role}
+                    model={message.model}
+                    avatarUrl={session.avatarUrl}
+                  />
                 </div>
                 {showTyping && (
                   <div className={styles["chat-message-status"]}>

@@ -355,14 +355,16 @@
 }
 
 .user-avtar {
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: var(--border-in-light);
   box-shadow: var(--card-shadow);
   border-radius: 10px;
+  overflow: hidden;
+  padding: 3px;
 }
 
 .chat-message-item {
