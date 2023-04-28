@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -24,6 +24,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Persona } from "./persona";
+import { Popover } from "./ui-lib";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -83,6 +84,8 @@ export function SideBar(props: { className?: string }) {
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
+  const [showPeasonaModal, setShowPeasonaModal] = useState(false);
+  const [newSessionOpen, setNewSessionOpen] = useState(false);
 
   return (
     <div
@@ -99,7 +102,6 @@ export function SideBar(props: { className?: string }) {
           <ChatGptIcon />
         </div>
       </div>
-
       <div
         className={styles["sidebar-body"]}
         onClick={(e) => {
@@ -109,9 +111,7 @@ export function SideBar(props: { className?: string }) {
         }}
       >
         <ChatList narrow={shouldNarrow} />
-        <Persona />
       </div>
-
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
@@ -131,22 +131,59 @@ export function SideBar(props: { className?: string }) {
             </a>
           </div>
         </div>
-        <div>
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              chatStore.newSession();
-            }}
-            shadow
-          />
+        <div className={styles["sidebar-new-session"]}>
+          <Popover
+            direction="up"
+            content={
+              <>
+                <div className={styles["popover-wrapper"]}>
+                  <IconButton
+                    className={styles["icon-btn"]}
+                    icon={<AddIcon />}
+                    text={shouldNarrow ? undefined : Locale.Home.NewPeasona}
+                    onClick={() => {
+                      setShowPeasonaModal(true);
+                      setNewSessionOpen(false);
+                    }}
+                    shadow
+                  />
+                  {/* <div className={styles["line"]}></div> */}
+                  <IconButton
+                    className={styles["icon-btn"]}
+                    icon={<AddIcon />}
+                    text={shouldNarrow ? undefined : Locale.Home.EmptyChat}
+                    onClick={() => {
+                      chatStore.newSession();
+                      setNewSessionOpen(false);
+                    }}
+                    shadow
+                  />
+                </div>
+              </>
+            }
+            open={newSessionOpen}
+            onClose={() => setNewSessionOpen(false)}
+          >
+            <div>
+              <IconButton
+                icon={<AddIcon />}
+                text={shouldNarrow ? undefined : Locale.Home.NewChat}
+                onClick={() => {
+                  setNewSessionOpen(true);
+                }}
+                shadow
+              />
+            </div>
+          </Popover>
         </div>
       </div>
-
       <div
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
       ></div>
+      {showPeasonaModal && (
+        <Persona onClose={() => setShowPeasonaModal(false)} />
+      )}
     </div>
   );
 }

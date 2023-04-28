@@ -9,7 +9,7 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import DownloadIcon from "../icons/download.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import BotIcon from "../icons/bot.svg";
+import BotAvatar from "../../public/chatAvatar.jpg";
 import BlackBotIcon from "../icons/black-bot.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -95,7 +95,14 @@ export function Avatar(props: {
         {props.model?.startsWith("gpt-4") ? (
           <BlackBotIcon className={styles["user-avtar"]} />
         ) : (
-          <BotIcon className={styles["user-avtar"]} />
+          <div className={styles["user-avtar"]}>
+            <Image
+              src={BotAvatar}
+              alt="Picture of the author"
+              width={48}
+              height={48}
+            />
+          </div>
         )}
       </div>
     );
@@ -103,7 +110,7 @@ export function Avatar(props: {
 
   return (
     <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} getEmojiUrl={getEmojiUrl} />
+      <Emoji unified={config.avatar} size={36} getEmojiUrl={getEmojiUrl} />
     </div>
   );
 }
@@ -647,7 +654,7 @@ export function Chat() {
           ]
         : [],
     )
-    .filter((message) => !message.isPreset);
+    .filter((message) => !message.isUserPreset);
 
   const [showPromptModal, setShowPromptModal] = useState(false);
 

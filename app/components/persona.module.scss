@@ -1,32 +1,185 @@
-.persona-list {
+@import "../styles/animation.scss";
+
+.persona-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
     display: flex;
+    background-color: rgba(25,25,25,0.3);
 }
 
+.persona-list-wrapper{
+    position: relative;
+    display: flex;
+    margin: 7vh 5vw;
+    padding: 8vh 3vw;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    width: 30vw;
+    border-radius: 10%;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 0px 80px 30px rgba(25,25,25,0.4),inset 0px 0px 80px 30px rgba(0, 0, 0, 0.4);
+    filter: blur(0.3px);
+
+    .persona-list-item-wrapper {
+        flex:1;
+        overflow-y: scroll;
+        margin-bottom: 5vh;
+        scrollbar-width: none; 
+        &::-webkit-scrollbar {
+            display: none;
+          }
+        padding: 2vh 1vw;
+    }
+
+    .persona-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+    }
+
+    .persona-list-desc{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 4vh;
+        padding: 1vh 1.5vw;
+        background-color: white;
+        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+        border: 2px solid black;
+    }
+
+    .persona-list-desc-img {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 50px;
+        margin: 1.2vh 1vw;
+        vertical-align: middle;
+    }
+
+    .persona-choose-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+        border: 2px solid black;
+        padding: 5px 20px;
+        height: 6vh;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .persona-btn-desc{
+        margin-right: 8px;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        font-size: 1.2rem;
+        color: rgb(28, 9, 12);
+    }
+
+    .persona-choose-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .persona-btn-desc-img{
+        position: relative;
+        width: 40px;
+        height: 40px;
+    }
+}
 
 .persona-item {
-    display: inline-block;
     height: 48px;
-    padding: 5px;
-    margin: 5px;
-    background-color: var(--white);
+    width: 48px;
+    margin: 10px;
     border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: var(--card-shadow);
-    transition: background-color 0.3s ease;
+    box-shadow: 0px 0px 4px 2px rgba(25, 25, 25, 1.5);
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
     cursor: pointer;
     user-select: none;
-    border: 2px solid transparent;
     position: relative;
     overflow: hidden;
-    &:hover {
-        background-color: var(--hover-color);
+    animation: wonderful-slide-in 0.7s ease;
+}
+
+.persona-item-hover {
+    transform: scale(1.5);
+    border: 2px #3e85a3;
+    border-style: outset;
+}
+
+.shake {
+    
+    animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.persona-preview {
+    display: flex;
+    flex-direction: column;
+    flex:1;
+
+    .persona-image-wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5vh 2vw;
+        box-sizing: border-box;
+        border-radius: 100px;
     }
-    &:first-child {
-        margin-left: 0;
-    }
-  
-    &:last-child {
-        margin-right: 0;
+
+    .persona-image {
+        position: relative;
+        width: 25vw;
+        height: 25vw;
+        border-radius: 20px;
+        overflow: hidden;
+        filter: blur(1px);
+        box-shadow: 0px 0px 50px 50px rgba(25,25,25,0.2)
+        ,inset 0px 0px 20px 50px rgba(0, 0, 0, 0.7),
+        15vw 0px 31px 50px rgba(0,0,0,0.1),
+        -15vw 0px 31px 50px rgba(0,0,0,0.1);
+        animation: slide-in-from-right-with-rotate 0.5s ease;
     }
 }
 
+.persona-desc {
+    margin: 5vh 2vw;
+    padding: 5vh 6vw;
+    background-color: white;
+    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+    border: 2px solid black;
+    animation: slide-in-from-right 1s ease;
+    border-radius: 20px;
+
+    .persona-desc-title {
+        font-size: 20px;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        font-weight: bolder;
+    }
+}
+
+.escape-btn {
+    position: absolute;
+    display: flex;
+    left: 5px;
+    top: 5px;
+    border-radius: 2px;
+    width: 46px;
+    height: 45px;
+    box-sizing: border-box;
+    padding-right: 4px;
+    box-shadow: 0px 0px 20px 10px rgba(25,25,25,0.5)
+    ,inset 0px 0px 20px 50px rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+}

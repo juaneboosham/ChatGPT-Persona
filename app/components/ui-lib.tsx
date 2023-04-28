@@ -9,14 +9,21 @@ export function Popover(props: {
   content: JSX.Element;
   open?: boolean;
   onClose?: () => void;
+  direction?: "up" | "down";
 }) {
   return (
     <div className={styles.popover}>
       {props.children}
       {props.open && (
-        <div className={styles["popover-content"]}>
+        <div
+          className={
+            props.direction === "up"
+              ? styles["popover-up-content"]
+              : styles["popover-down-content"]
+          }
+        >
           <div className={styles["popover-mask"]} onClick={props.onClose}></div>
-          {props.content}
+          <div className={styles["popover-content-box"]}>{props.content}</div>
         </div>
       )}
     </div>

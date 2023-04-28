@@ -13,6 +13,16 @@ const nextConfig = {
     return config;
   },
   output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: process.env.IMAGE_HOSTS,
+        port: '',
+        pathname: '/chatGPT/**',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

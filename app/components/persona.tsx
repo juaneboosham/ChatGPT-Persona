@@ -1,94 +1,228 @@
-import DeleteIcon from "../icons/delete.svg";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  OnDragEndResponder,
-} from "@hello-pangea/dnd";
-import Locale from "../locales";
-import { Link, useNavigate } from "react-router-dom";
-import { Path } from "../constant";
-import Image, { StaticImageData } from "next/image";
-import avatarUrl1 from "../..//public/jay.png";
-import avatarUrl2 from "../..//public/snape.jpg";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import arrowKeyImg from "../../public/arrow_key.jpg";
+import btnImg from "../../public/btn.webp";
+import enterImg from "../../public/enter.webp";
+import escImg from "../../public/esc.webp";
+import personas from "../../public/personas.json";
+import ReturnIcon from "../icons/return.svg";
+import { createMessage, createPresetMessage, useChatStore } from "../store";
+import { useMobileScreen } from "../utils";
 import styles from "./persona.module.scss";
-import {
-  Message,
-  SubmitKey,
-  useChatStore,
-  BOT_HELLO,
-  ROLES,
-  createMessage,
-  useAccessStore,
-  Theme,
-  ModelType,
-  useAppConfig,
-  createPresetMessage,
-} from "../store";
+import Locale from "../locales";
 
 interface Persona {
   id: number;
-  avatarUrl: StaticImageData | string;
+  avatarUrl: string;
   presetContent: string;
+  persona: string;
+  sayHi: string;
 }
 
-export function Persona(props: { narrow?: boolean }) {
-  const [sessions, selectedIndex, selectSession, removeSession, moveSession] =
-    useChatStore((state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.removeSession,
-      state.moveSession,
-    ]);
-  const chatStore = useChatStore();
-  const navigate = useNavigate();
-  const content1 =
-    "您被委任为音乐推荐专家。您需要创建一个包含 10 首与给定歌曲相似的歌曲的播放列表。您需要为播放列表提供一个独特的名称和描述，以激发听众的兴趣。请确保不要选择同名或同名歌手的曲目，以使播放列表更加多样化。在回复中，请提供播放列表的名称、描述和所有 10 首歌曲名称。您的第一个参考曲目是周杰伦的《稻香》。";
+interface PeasonaProps {
+  actions?: JSX.Element[];
+  onClose?: () => void;
+}
 
-  const content2 =
-    "我要你扮演诗人。你将创作出能唤起情感并具有触动人心的力量的诗歌。写任何主题或主题，但要确保您的文字以优美而有意义的方式传达您试图表达的感觉。您还可以想出一些短小的诗句，这些诗句仍然足够强大，可以在读者的脑海中留下印记。我的第一个请求是“我需要一首关于爱情的诗”。";
-  const personas: Persona[] = [
-    {
-      id: 1,
-      presetContent: content1,
-      avatarUrl: avatarUrl1,
-    },
-    {
-      id: 2,
-      presetContent: content2,
-      avatarUrl: avatarUrl2,
-    },
-  ];
+const personaIconWidth = 48;
+const personaIconHeight = 48;
+
+export function Persona(props: PeasonaProps) {
+  const [curPersona, setCurPersona] = useState(personas?.[0]);
+  const [shake, setShake] = useState(false);
+  const chatStore = useChatStore();
+  const personaWrapperRef = useRef<HTMLDivElement>(null);
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      props.onClose?.();
+    }
+    if (e.key === "Enter") {
+      setShake(true);
+      setTimeout(selectPersona, 500);
+    }
+    if (e.key === "ArrowUp") {
+      const index = personas.indexOf(curPersona);
+      const { curRow, curCol, row, col } = calPosition(index);
+      if (curRow !== 1) {
+        const nextIndex = index - col < 0 ? 0 : index - col;
+        onHover(personas[nextIndex]);
+      }
+    }
+    if (e.key === "ArrowDown") {
+      const index = personas.indexOf(curPersona);
+      const { curRow, curCol, row, col } = calPosition(index);
+      if (curRow !== row) {
+        const nextIndex =
+          index + col > personas.length - 1 ? personas.length - 1 : index + col;
+        onHover(personas[nextIndex]);
+      }
+    }
+
+    if (e.key === "ArrowLeft") {
+      const index = personas.indexOf(curPersona);
+      const { curRow, curCol, row, col } = calPosition(index);
+      if (curCol !== 1) {
+        const nextIndex = index - 1 < 0 ? 0 : index - 1;
+        onHover(personas[nextIndex]);
+      }
+    }
+    if (e.key === "ArrowRight") {
+      const index = personas.indexOf(curPersona);
+      const { curRow, curCol, row, col } = calPosition(index);
+      if (curCol !== col) {
+        const nextIndex =
+          index + 1 > personas.length - 1 ? personas.length - 1 : index + 1;
+        onHover(personas[nextIndex]);
+      }
+    }
+
+    function calPosition(index: number) {
+      const personaListBox = personaWrapperRef.current;
+      const boxWidth = personaListBox?.offsetWidth || 0;
+      const aMargin = 10;
+      const col = Math.floor(boxWidth / (personaIconWidth + aMargin * 2));
+      const boxHeight = personaListBox?.offsetHeight || 0;
+      const row = Math.floor(boxHeight / (personaIconHeight + aMargin * 2));
+      const curRow = Math.ceil((index + 1) / col);
+      const curCol = index + 1 - (curRow - 1) * col;
+      return { curRow, row, col, curCol };
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [curPersona]);
 
   const newPresetSession = (persona: Persona) => {
-    const presetMessage = createPresetMessage({
+    const presetUserMessage = createPresetMessage({
       role: "user",
       content: persona.presetContent,
     });
-    chatStore.newPresetSession(persona.avatarUrl, presetMessage);
+    const botSayHiMessage = createMessage({
+      role: "assistant",
+      content: persona.sayHi,
+    });
+    const presetMessages = [presetUserMessage, botSayHiMessage];
+    chatStore.newPresetSession(
+      persona.avatarUrl,
+      presetMessages,
+      persona.persona,
+    );
   };
 
+  const selectPersona = () => {
+    console.log("curPersona", curPersona);
+    newPresetSession(curPersona);
+    props.onClose?.();
+  };
+
+  const onHover = (persona: Persona) => {
+    setShake(false);
+    setCurPersona(persona);
+  };
+
+  const isMobileScreen = useMobileScreen();
+
   return (
-    <div className={styles["persona-list"]}>
-      {personas.map((persona) => {
-        return (
-          <span
-            key={persona.id}
-            className={styles["persona-item"]}
-            onClick={() => {
-              newPresetSession(persona);
-            }}
-          >
-            <Image
-              src={persona.avatarUrl}
-              alt="Picture of the author"
-              width={48}
-              height={48}
-            />
-          </span>
-        );
-      })}
+    <div id="persona" className="modal-mask">
+      <div className={styles["persona-wrapper"]}>
+        <div className={styles["escape-btn"]} onClick={() => props.onClose?.()}>
+          <Image
+            src={escImg}
+            alt="Picture of the author"
+            width={65}
+            height={55}
+          />
+        </div>
+        <div className={styles["persona-list-wrapper"]}>
+          {!isMobileScreen && (
+            <div className={styles["persona-list-desc"]}>
+              <div>
+                <span>{Locale.Persona.Use}</span>
+                <span className={styles["persona-list-desc-img"]}>
+                  <Image
+                    src={arrowKeyImg}
+                    alt="Picture of the author"
+                    fill={true}
+                  />
+                </span>
+                <span>{Locale.Persona.ViewPersona}</span>
+              </div>
+              <div>
+                <span>{Locale.Persona.Press}</span>
+                <span className={styles["persona-list-desc-img"]}>
+                  <Image
+                    src={enterImg}
+                    alt="Picture of the author"
+                    fill={true}
+                  />
+                </span>
+                <span>{Locale.Persona.Confirm}</span>
+              </div>
+            </div>
+          )}
+          <div className={styles["persona-list-item-wrapper"]}>
+            <div className={styles["persona-list"]} ref={personaWrapperRef}>
+              {personas.map((persona) => {
+                return (
+                  <span
+                    key={persona.id}
+                    className={`${styles["persona-item"]} ${
+                      curPersona === persona ? styles["persona-item-hover"] : ""
+                    } ${
+                      curPersona === persona && shake ? styles["shake"] : ""
+                    }`}
+                    onClick={() => onHover(persona)}
+                  >
+                    <Image
+                      src={persona.avatarUrl}
+                      alt="Picture of the author"
+                      width={personaIconWidth}
+                      height={personaIconHeight}
+                    />
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+          <div className={styles["persona-choose-wrapper"]}>
+            <div
+              className={styles["persona-choose-btn"]}
+              onClick={selectPersona}
+            >
+              {!isMobileScreen && (
+                <span className={styles["persona-btn-desc"]}>
+                  {Locale.Persona.ChoosePersona}&nbsp;&crarr;
+                </span>
+              )}
+              <div className={styles["persona-btn-desc-img"]}>
+                <Image src={btnImg} alt="Picture of the author" fill={true} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles["persona-preview"]}>
+          <div className={styles["persona-image-wrapper"]}>
+            <div className={styles["persona-image"]}>
+              <Image
+                src={curPersona.avatarUrl}
+                fill={true}
+                alt={curPersona.sayHi}
+              ></Image>
+            </div>
+          </div>
+          <div className={styles["persona-desc"]}>
+            <p className={styles["persona-desc-title"]}>{curPersona.persona}</p>
+            <p>{curPersona.sayHi}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

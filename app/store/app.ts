@@ -20,7 +20,7 @@ export type Message = ChatCompletionResponseMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
-  isPreset?: boolean;
+  isUserPreset?: boolean;
 };
 
 export function createMessage(override: Partial<Message>): Message {
@@ -35,7 +35,7 @@ export function createMessage(override: Partial<Message>): Message {
 
 export function createPresetMessage(override: Partial<Message>): Message {
   const message = createMessage(override);
-  message.isPreset = true;
+  message.isUserPreset = true;
   return message;
 }
 
@@ -57,7 +57,7 @@ export interface ChatSession {
   stat: ChatStat;
   lastUpdate: string;
   lastSummarizeIndex: number;
-  avatarUrl: string;
+  avatarUrl?: string;
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -88,11 +88,13 @@ function createEmptySession(): ChatSession {
 
 function createPresetSession(
   avatarUrl: string,
-  presetMessage: Message,
+  presetMessages: Message[],
+  topic: string,
 ): ChatSession {
   const presetSession = createEmptySession();
   presetSession.avatarUrl = avatarUrl;
-  presetSession.context.push(presetMessage);
+  presetSession.context.push(...presetMessages);
+  presetSession.topic = topic;
   return presetSession;
 }
 
@@ -105,8 +107,9 @@ interface ChatStore {
   selectSession: (index: number) => void;
   newSession: () => void;
   newPresetSession: (
-    avatarUrl: string | StaticImageData,
-    message: Message,
+    avatarUrl: string,
+    messages: Message[],
+    topic: string,
   ) => void;
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
@@ -209,10 +212,10 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
 
-      newPresetSession(avatarUrl: string, message: Message) {
+      newPresetSession(avatarUrl: string, messages: Message[], topic: string) {
         set((state) => ({
           currentSessionIndex: 0,
-          sessions: [createPresetSession(avatarUrl, message)].concat(
+          sessions: [createPresetSession(avatarUrl, messages, topic)].concat(
             state.sessions,
           ),
         }));

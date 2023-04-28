@@ -49,10 +49,20 @@ const en: LocaleType = {
       "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
   },
   Home: {
+    EmptyChat: "Empty Chat",
     NewChat: "New Chat",
+    NewPeasona: "Peasona",
     DeleteChat: "Confirm to delete the selected conversation?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
+  },
+  Persona: {
+    ChoosePersona: "Choose Persona",
+    Use: "Use",
+    Confirm: "to Confirm",
+    ViewPersona: "to Find a Persona",
+    Press: "Press",
+    Revert: "撤销",
   },
   Settings: {
     Title: "Settings",

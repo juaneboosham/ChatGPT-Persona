@@ -47,8 +47,18 @@ const cn = {
   },
   Home: {
     NewChat: "新的聊天",
+    NewPeasona: "角色",
+    EmptyChat: "新的空白聊天",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
+    Revert: "撤销",
+  },
+  Persona: {
+    ChoosePersona: "选择角色",
+    Use: "用",
+    Confirm: "确认",
+    ViewPersona: "查看角色",
+    Press: "按",
     Revert: "撤销",
   },
   Settings: {
