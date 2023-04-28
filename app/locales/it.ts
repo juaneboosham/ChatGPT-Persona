@@ -49,10 +49,20 @@ const it: LocaleType = {
       "Ripristinare cancellerà la conversazione corrente e la cronologia di memoria. Sei sicuro che vuoi riavviare?",
   },
   Home: {
-    NewChat: "Nuova Chat",
-    DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
-    DeleteToast: "Chat Cancellata",
+    EmptyChat: "Empty Chat",
+    NewChat: "New Chat",
+    NewPeasona: "Peasona",
+    DeleteChat: "Confirm to delete the selected conversation?",
+    DeleteToast: "Chat Deleted",
     Revert: "Revert",
+  },
+  Persona: {
+    ChoosePersona: "Choose Persona",
+    Use: "Use",
+    Confirm: "to Confirm",
+    ViewPersona: "to Find a Persona",
+    Press: "Press",
+    Revert: "撤销",
   },
   Settings: {
     Title: "Impostazioni",

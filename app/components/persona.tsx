@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import arrowKeyImg from "../../public/arrow_key.jpg";
+import arrowKeyImg from "../../public/arrow_key.png";
 import btnImg from "../../public/btn.webp";
 import enterImg from "../../public/enter.webp";
 import escImg from "../../public/esc.webp";
 import personas from "../../public/personas.json";
-import ReturnIcon from "../icons/return.svg";
 import { createMessage, createPresetMessage, useChatStore } from "../store";
 import { useMobileScreen } from "../utils";
 import styles from "./persona.module.scss";
