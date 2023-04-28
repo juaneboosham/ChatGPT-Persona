@@ -137,8 +137,8 @@
 
     .persona-image {
         position: relative;
-        width: 25vw;
-        height: 25vw;
+        width: 20vw;
+        height: 20vw;
         border-radius: 20px;
         overflow: hidden;
         filter: blur(1px);
@@ -151,7 +151,9 @@
 }
 
 .persona-desc {
-    margin: 5vh 2vw;
+    flex: 1;
+    overflow: scroll;
+    margin: 5vh 2vw 10vh;
     padding: 5vh 6vw;
     background-color: white;
     box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
