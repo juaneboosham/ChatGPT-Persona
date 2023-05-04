@@ -201,7 +201,12 @@ export function Persona(props: PeasonaProps) {
                 </span>
               )}
               <div className={styles["persona-btn-desc-img"]}>
-                <Image src={btnImg} alt="Picture of the author" fill={true} />
+                <Image
+                  src={btnImg}
+                  alt="Picture of the author"
+                  fill={true}
+                  priority={true}
+                />
               </div>
             </div>
           </div>
@@ -213,6 +218,7 @@ export function Persona(props: PeasonaProps) {
                 src={curPersona.avatarUrl}
                 fill={true}
                 alt={curPersona.sayHi}
+                priority={true}
               ></Image>
             </div>
           </div>
