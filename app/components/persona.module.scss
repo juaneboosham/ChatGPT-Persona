@@ -1,11 +1,18 @@
 @import "../styles/animation.scss";
 
+@mixin button-hover($scale-factor: 1.1) {
+    transform: scale($scale-factor);
+    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+  }
+
 .persona-wrapper {
     position: relative;
     width: 100vw;
     height: 100vh;
     display: flex;
-    background-color: rgba(25,25,25,0.3);
+    // background-color: rgba(25,25,25,0.3);
+    background: url("../../public/personaBg.jpg");
+    background-size: contain;
 }
 
 .persona-list-wrapper{
@@ -19,7 +26,7 @@
     justify-content: space-between;
     width: 30vw;
     border-radius: 10%;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0px 0px 80px 30px rgba(25,25,25,0.4),inset 0px 0px 80px 30px rgba(0, 0, 0, 0.4);
     filter: blur(0.3px);
 
@@ -73,6 +80,9 @@
         height: 6vh;
         border-radius: 20px;
         cursor: pointer;
+        &:hover{
+            @include button-hover(1.1);
+        }
     }
 
     .persona-btn-desc{
@@ -133,20 +143,24 @@
         padding: 5vh 2vw;
         box-sizing: border-box;
         border-radius: 100px;
+        opacity: 0.8;
+
     }
 
     .persona-image {
         position: relative;
         width: 20vw;
         height: 20vw;
-        border-radius: 20px;
+        border-radius: 45%;
         overflow: hidden;
-        filter: blur(1px);
-        box-shadow: 0px 0px 50px 50px rgba(25,25,25,0.2)
-        ,inset 0px 0px 20px 50px rgba(0, 0, 0, 0.7),
-        15vw 0px 31px 50px rgba(0,0,0,0.1),
-        -15vw 0px 31px 50px rgba(0,0,0,0.1);
         animation: slide-in-from-right-with-rotate 0.5s ease;
+        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1), 
+        inset 0px 0px 20px 50px rgba(0, 0, 0, 0.3),
+        0px 0px 0px 5px rgba(0, 0, 0, 0.2);
+        &:hover{
+            transform: scale(1.2);
+            cursor: grab;
+        }
     }
 }
 
@@ -184,4 +198,10 @@
     align-items: center;
     overflow: hidden;
     cursor: pointer;
+&:hover{
+    @include button-hover(1.1);
 }
+
+
+}
+

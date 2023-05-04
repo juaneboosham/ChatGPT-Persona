@@ -211,7 +211,7 @@ export function Persona(props: PeasonaProps) {
             </div>
           </div>
         </div>
-        <div className={styles["persona-preview"]}>
+        <div className={styles["persona-preview"]} key={curPersona.id}>
           <div className={styles["persona-image-wrapper"]}>
             <div className={styles["persona-image"]}>
               <Image
