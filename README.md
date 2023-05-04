@@ -7,6 +7,7 @@ English / [简体中文](./README_CN.md)
 
 One-Click to deploy well-designed ChatGPT web UI on Vercel.
 
+
 一键免费部署你的私人 ChatGPT 网页应用。
 
 [Demo](https://chat-gpt-next-web.vercel.app/) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
@@ -16,6 +17,8 @@ One-Click to deploy well-designed ChatGPT web UI on Vercel.
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/pPchvD?referralCode=5mcmNY)
+
 
 ![cover](./docs/images/cover.png)
 
