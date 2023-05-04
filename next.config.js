@@ -22,7 +22,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: process.env.IMAGE_HOSTS,
+        hostname: "image-bed.vercel.app",
         port: '',
         pathname: '/chatGPT/**',
       },
