@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 
+const IMAGE_HOSTS = process.env.IMAGE_HOSTS
+console.log('IMAGE_HOSTS', IMAGE_HOSTS)
+
 const nextConfig = {
   experimental: {
     appDir: true,
