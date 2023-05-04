@@ -37,8 +37,7 @@ export function Persona(props: PeasonaProps) {
       props.onClose?.();
     }
     if (e.key === "Enter") {
-      setShake(true);
-      setTimeout(selectPersona, 500);
+      choosePersona();
     }
     if (e.key === "ArrowUp") {
       const index = personas.indexOf(curPersona);
@@ -115,10 +114,12 @@ export function Persona(props: PeasonaProps) {
     );
   };
 
-  const selectPersona = () => {
-    console.log("curPersona", curPersona);
-    newPresetSession(curPersona);
-    props.onClose?.();
+  const choosePersona = () => {
+    setShake(true);
+    setTimeout(() => {
+      newPresetSession(curPersona);
+      props.onClose?.();
+    }, 500);
   };
 
   const onHover = (persona: Persona) => {
@@ -193,7 +194,7 @@ export function Persona(props: PeasonaProps) {
           <div className={styles["persona-choose-wrapper"]}>
             <div
               className={styles["persona-choose-btn"]}
-              onClick={selectPersona}
+              onClick={choosePersona}
             >
               {!isMobileScreen && (
                 <span className={styles["persona-btn-desc"]}>
