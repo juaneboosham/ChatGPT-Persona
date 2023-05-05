@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import arrowKeyImg from "../../public/arrow_key.png";
-import btnImg from "../../public/btn.webp";
-import enterImg from "../../public/enter.webp";
-import escImg from "../../public/esc.webp";
+import arrowKeyImg from "../../public/persona/arrow_key.png";
+import btnImg from "../../public/persona/btn.webp";
+import enterImg from "../../public/persona/enter.webp";
+import escImg from "../../public/persona/esc.webp";
 import personas from "../../public/personas.json";
 import { createMessage, createPresetMessage, useChatStore } from "../store";
 import { useMobileScreen } from "../utils";
@@ -18,7 +18,7 @@ interface Persona {
   sayHi: string;
 }
 
-interface PeasonaProps {
+interface PersonaProps {
   actions?: JSX.Element[];
   onClose?: () => void;
 }
@@ -26,7 +26,7 @@ interface PeasonaProps {
 const personaIconWidth = 48;
 const personaIconHeight = 48;
 
-export function Persona(props: PeasonaProps) {
+export function Persona(props: PersonaProps) {
   const [curPersona, setCurPersona] = useState(personas?.[0]);
   const [shake, setShake] = useState(false);
   const chatStore = useChatStore();
@@ -41,7 +41,7 @@ export function Persona(props: PeasonaProps) {
     }
     if (e.key === "ArrowUp") {
       const index = personas.indexOf(curPersona);
-      const { curRow, curCol, row, col } = calPosition(index);
+      const { curRow, col } = calPosition(index);
       if (curRow !== 1) {
         const nextIndex = index - col < 0 ? 0 : index - col;
         onHover(personas[nextIndex]);
@@ -49,7 +49,7 @@ export function Persona(props: PeasonaProps) {
     }
     if (e.key === "ArrowDown") {
       const index = personas.indexOf(curPersona);
-      const { curRow, curCol, row, col } = calPosition(index);
+      const { curRow, row, col } = calPosition(index);
       if (curRow !== row) {
         const nextIndex =
           index + col > personas.length - 1 ? personas.length - 1 : index + col;
@@ -59,7 +59,7 @@ export function Persona(props: PeasonaProps) {
 
     if (e.key === "ArrowLeft") {
       const index = personas.indexOf(curPersona);
-      const { curRow, curCol, row, col } = calPosition(index);
+      const { curCol } = calPosition(index);
       if (curCol !== 1) {
         const nextIndex = index - 1 < 0 ? 0 : index - 1;
         onHover(personas[nextIndex]);
@@ -67,7 +67,7 @@ export function Persona(props: PeasonaProps) {
     }
     if (e.key === "ArrowRight") {
       const index = personas.indexOf(curPersona);
-      const { curRow, curCol, row, col } = calPosition(index);
+      const { curCol, col } = calPosition(index);
       if (curCol !== col) {
         const nextIndex =
           index + 1 > personas.length - 1 ? personas.length - 1 : index + 1;

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 require('dotenv').config()
 
-const IMAGE_HOSTS = process.env.IMAGE_HOSTS
-console.log('IMAGE_HOSTS', IMAGE_HOSTS)
-console.log('process.env.IMAGE_HOSTS', process.env);
 
 const nextConfig = {
   experimental: {

@@ -2,7 +2,7 @@
 
 @mixin button-hover($scale-factor: 1.1) {
     transform: scale($scale-factor);
-    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
   }
 
 .persona-wrapper {
@@ -11,7 +11,7 @@
     height: 100vh;
     display: flex;
     // background-color: rgba(25,25,25,0.3);
-    background: url("../../public/personaBg.jpg");
+    background: url("../../public/persona/personaBg.jpg");
     background-size: contain;
 }
 
@@ -27,14 +27,14 @@
     width: 30vw;
     border-radius: 10%;
     background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 80px 30px rgba(25,25,25,0.4),inset 0px 0px 80px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 80px 30px rgba(25,25,25,0.4),inset 0 0 80px 30px rgba(0, 0, 0, 0.4);
     filter: blur(0.3px);
 
     .persona-list-item-wrapper {
         flex:1;
         overflow-y: scroll;
         margin-bottom: 5vh;
-        scrollbar-width: none; 
+        scrollbar-width: none;
         &::-webkit-scrollbar {
             display: none;
           }
@@ -56,7 +56,7 @@
         margin-bottom: 4vh;
         padding: 1vh 1.5vw;
         background-color: white;
-        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
         border: 2px solid black;
     }
 
@@ -74,7 +74,7 @@
         justify-content: center;
         align-items: center;
         background-color: #fff;
-        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
         border: 2px solid black;
         padding: 5px 20px;
         height: 6vh;
@@ -110,7 +110,7 @@
     width: 48px;
     margin: 10px;
     border-radius: 10px;
-    box-shadow: 0px 0px 4px 2px rgba(25, 25, 25, 1.5);
+    box-shadow: 0 0 4px 2px rgba(25, 25, 25, 1.5);
     box-sizing: border-box;
     transition: transform 0.3s ease;
     cursor: pointer;
@@ -127,7 +127,7 @@
 }
 
 .shake {
-    
+
     animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
 }
 
@@ -154,9 +154,9 @@
         border-radius: 45%;
         overflow: hidden;
         animation: slide-in-from-right-with-rotate 0.5s ease;
-        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1), 
-        inset 0px 0px 20px 50px rgba(0, 0, 0, 0.3),
-        0px 0px 0px 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1),
+        inset 0 0 20px 50px rgba(0, 0, 0, 0.3),
+        0 0 0 5px rgba(0, 0, 0, 0.2);
         &:hover{
             transform: scale(1.2);
             cursor: grab;
@@ -170,7 +170,7 @@
     margin: 5vh 2vw 10vh;
     padding: 5vh 6vw;
     background-color: white;
-    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
     border: 2px solid black;
     animation: slide-in-from-right 1s ease;
     border-radius: 20px;
@@ -192,8 +192,8 @@
     height: 45px;
     box-sizing: border-box;
     padding-right: 4px;
-    box-shadow: 0px 0px 20px 10px rgba(25,25,25,0.5)
-    ,inset 0px 0px 20px 50px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 20px 10px rgba(25,25,25,0.5)
+    ,inset 0 0 20px 50px rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
     overflow: hidden;
