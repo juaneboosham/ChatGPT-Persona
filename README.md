@@ -35,7 +35,7 @@
 
 1、vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Fjuaneboosham%2FChatGPT-Next-Web&project-name=chat-gpt-next-web&env=OPENAI_API_KEY&env=CODE&framework=nextjs)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Fjuaneboosham%2FChatGPT-Persona&project-name=ChatGPT-Persona&env=OPENAI_API_KEY&env=CODE&framework=nextjs)
 
 
 2、Railway
@@ -82,4 +82,7 @@ openai官网生成的[OpenAI API key](https://platform.openai.com/overview)，�
 
 感谢@Yidadaa，感谢Yidadaa/ChatGPT-Next-Web的参与者。
 
-[反馈 Issues](https://github.com/juaneboosham/ChatGPT-Next-Web/issues)
+[Issues](https://github.com/juaneboosham/ChatGPT-Persona/issues)
+
+## 反馈
+[Issues](https://github.com/juaneboosham/ChatGPT-Persona/issues)
