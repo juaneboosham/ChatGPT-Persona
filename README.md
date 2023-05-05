@@ -73,7 +73,9 @@ openai官网生成的[OpenAI API key](https://platform.openai.com/overview)，�
 ## 本地开发
 
 1.node环境, >= 16。
+
 2.git clone
+
 3.执行yarn install && yarn dev。
 
 ## 鸣谢
