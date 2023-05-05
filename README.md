@@ -76,11 +76,36 @@ openai官网生成的[OpenAI API key](https://platform.openai.com/overview)，�
 
 2.git clone
 
-3.执行yarn install && yarn dev。
+3.在.env.local文件下填入OPENAI_API_KEY
+
+4.执行yarn install && yarn dev。
+
+
+## 自定义角色
+
+在项目的src/public/personas.json存储着角色的画像，预置prompt，及打招呼信息。（打招呼信息及画像设置json格式也都是AI生成的，hhh）
+
+大家可以自行添加角色。
+
+画像的图片目前存储在vercel部署的图床上，大家也可以自行更换图片（本地图片或其他图片来源）。
+
+注意：next在获取外链图片时，需要在next.config.js添加hostname
+```
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: "image-bed.vercel.app",
+        port: '',
+        pathname: '/chatGPT/**',
+      },
+    ],
+  },
+  ```
 
 ## 鸣谢
 
-感谢@Yidadaa，感谢Yidadaa/ChatGPT-Next-Web的参与者。
+感谢[Yidadaa](https://github.com/Yidadaa)，感谢[Yidadaa/ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web)的参与者。
 
 [Issues](https://github.com/juaneboosham/ChatGPT-Persona/issues)
 
