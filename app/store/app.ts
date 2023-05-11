@@ -299,7 +299,13 @@ export const useChatStore = create<ChatStore>()(
 
         const currentSession = this.currentSession();
         const parentMessageId = currentSession.parentMessageId;
-        const res = await requestNiceChat(content, { parentMessageId });
+        console.log("useAppConfig.getState()", useAppConfig.getState());
+        const completionParams = useAppConfig.getState().modelConfig;
+        const option = {
+          parentMessageId,
+          completionParams,
+        };
+        const res = await requestNiceChat(content, option);
         const newParentsMessageId = res.message.id ?? "";
         get().updateCurrentSession((session) => {
           session.parentMessageId = newParentsMessageId;

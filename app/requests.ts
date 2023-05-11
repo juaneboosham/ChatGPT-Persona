@@ -8,6 +8,7 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
+import { niceApiOption } from "@/pages/api/typing";
 
 const TIME_OUT_MS = 60000;
 
@@ -259,13 +260,10 @@ export async function requestWithPrompt(
   return res?.choices?.at(0)?.message?.content ?? "";
 }
 
-export async function requestNiceChat(
-  prompt: string,
-  { parentMessageId }: { parentMessageId: string },
-) {
+export async function requestNiceChat(prompt: string, option: niceApiOption) {
   try {
     const resFn = await requestNiceApi();
-    const res = await resFn({ prompt, parentMessageId });
+    const res = await resFn({ prompt, option });
     const resJson = await res.json();
     return resJson;
   } catch (err) {
