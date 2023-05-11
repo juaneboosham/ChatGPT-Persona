@@ -5,6 +5,7 @@ import { type ChatCompletionResponseMessage } from "openai";
 import {
   ControllerPool,
   requestChatStream,
+  requestNiceChat,
   requestWithPrompt,
 } from "../requests";
 import { isMobileScreen, trimTopic } from "../utils";
@@ -48,6 +49,7 @@ export interface ChatStat {
 }
 
 export interface ChatSession {
+  parentMessageId?: string;
   id: number;
   topic: string;
   sendMemory: boolean;
@@ -295,47 +297,62 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
+        const currentSession = this.currentSession();
+        const parentMessageId = currentSession.parentMessageId;
+        const res = await requestNiceChat(content, { parentMessageId });
+        const newParentsMessageId = res.message.id ?? "";
+        get().updateCurrentSession((session) => {
+          session.parentMessageId = newParentsMessageId;
+        });
+        console.log(res, "nice chat api res");
+        botMessage.streaming = false;
+        botMessage.content = res.message.text;
+        get().onNewMessage(botMessage);
+
         // make request
-        console.log("[User Input] ", sendMessages);
-        requestChatStream(sendMessages, {
-          onMessage(content, done) {
-            // stream response
-            if (done) {
+        const oldRequestChatStream = () =>
+          requestChatStream(sendMessages, {
+            onMessage(content, done) {
+              // stream response
+              if (done) {
+                botMessage.streaming = false;
+                botMessage.content = content;
+                get().onNewMessage(botMessage);
+                ControllerPool.remove(
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
+                );
+              } else {
+                botMessage.content = content;
+                set(() => ({}));
+              }
+            },
+            onError(error, statusCode) {
+              if (statusCode === 401) {
+                botMessage.content = Locale.Error.Unauthorized;
+              } else if (!error.message.includes("aborted")) {
+                botMessage.content += "\n\n" + Locale.Store.Error;
+              }
               botMessage.streaming = false;
-              botMessage.content = content;
-              get().onNewMessage(botMessage);
+              userMessage.isError = true;
+              botMessage.isError = true;
+              set(() => ({}));
               ControllerPool.remove(
                 sessionIndex,
                 botMessage.id ?? messageIndex,
               );
-            } else {
-              botMessage.content = content;
-              set(() => ({}));
-            }
-          },
-          onError(error, statusCode) {
-            if (statusCode === 401) {
-              botMessage.content = Locale.Error.Unauthorized;
-            } else if (!error.message.includes("aborted")) {
-              botMessage.content += "\n\n" + Locale.Store.Error;
-            }
-            botMessage.streaming = false;
-            userMessage.isError = true;
-            botMessage.isError = true;
-            set(() => ({}));
-            ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-          filterBot: !useAppConfig.getState().sendBotMessages,
-          modelConfig: useAppConfig.getState().modelConfig,
-        });
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+            filterBot: !useAppConfig.getState().sendBotMessages,
+            modelConfig: useAppConfig.getState().modelConfig,
+          });
       },
 
       getMemoryPrompt() {

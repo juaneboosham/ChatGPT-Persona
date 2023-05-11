@@ -74,6 +74,18 @@ export function requestOpenaiClient(path: string) {
     });
 }
 
+export function requestNiceApi(path: string = "") {
+  return (body: any, method = "POST") =>
+    fetch("/api/chatgpt-api", {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...getHeaders(),
+      },
+      body: body && JSON.stringify(body),
+    });
+}
+
 export async function requestChat(
   messages: Message[],
   options?: {
@@ -245,6 +257,20 @@ export async function requestWithPrompt(
   const res = await requestChat(messages, options);
 
   return res?.choices?.at(0)?.message?.content ?? "";
+}
+
+export async function requestNiceChat(
+  prompt: string,
+  { parentMessageId }: { parentMessageId: string },
+) {
+  try {
+    const resFn = await requestNiceApi();
+    const res = await resFn({ prompt, parentMessageId });
+    const resJson = await res.json();
+    return resJson;
+  } catch (err) {
+    console.error("NetWork Error", err);
+  }
 }
 
 // To store message streaming controller
