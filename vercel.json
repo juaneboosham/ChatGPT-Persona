@@ -1,8 +1,5 @@
 {
     "github": {
         "silent": true
-    },
-    "proxy": {
-        "buffer": false
-      }
+    }
 }
