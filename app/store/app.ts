@@ -313,6 +313,7 @@ export const useChatStore = create<ChatStore>()(
               });
             } else {
               botMessage.content = chunk.text;
+              console.log("botMessage.content", botMessage.content);
               set(() => ({}));
             }
           },

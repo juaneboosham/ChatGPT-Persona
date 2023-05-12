@@ -1,11 +1,5 @@
 {
     "github": {
         "silent": true
-    },
-    "functions": {
-        "api/chatgpt-api-stream": {
-          "memory": 3008,
-          "maxDuration": 30
-        }
-      }
+    }
 }
