@@ -609,7 +609,6 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  console.log("new session context", session.context);
   const context: RenderMessage[] = session.context.slice();
 
   const accessStore = useAccessStore();

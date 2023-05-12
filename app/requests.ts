@@ -75,7 +75,7 @@ export function requestOpenaiClient(path: string) {
     });
 }
 
-export function requestNiceApi(path: string = "") {
+export function requestNiceApi() {
   return (body: any, method = "POST") =>
     fetch("/api/chatgpt-api", {
       method,
@@ -85,6 +85,72 @@ export function requestNiceApi(path: string = "") {
       },
       body: body && JSON.stringify(body),
     });
+}
+
+export async function requestNiceApiStream(
+  prompt: String,
+  option: any,
+  callbacks: {
+    onMessage: (chunk: any, done: boolean) => void;
+    onError: (error: Error, statusCode?: number) => void;
+    onController?: (controller: AbortController) => void;
+  },
+) {
+  const controller = new AbortController();
+  const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+  const onMessage = callbacks.onMessage;
+  const body = { prompt, option };
+  try {
+    const res = await fetch("/api/chatgpt-api-stream", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getHeaders(),
+      },
+      body: body && JSON.stringify(body),
+      signal: controller.signal,
+    });
+    clearTimeout(reqTimeoutId);
+
+    if (res.ok) {
+      const decoder = new TextDecoder();
+      const reader = res?.body?.getReader();
+      let done = false;
+      let chunkObj;
+      callbacks?.onController?.(controller);
+
+      while (true) {
+        const content = await reader?.read();
+
+        if (!content || !content.value || content.done) {
+          done = true;
+          onMessage(chunkObj, done);
+          controller.abort();
+          break;
+        }
+
+        const value = decoder.decode(content?.value, { stream: true });
+
+        // There is no way to know how many chunks are received at a time, so only the last chunk is processed
+        const receivedChunks = value
+          .split("\n*")
+          .filter((chunk) => chunk !== "");
+
+        chunkObj = JSON.parse(receivedChunks[receivedChunks.length - 1]);
+        // console.log("receive", chunkObj);
+        onMessage(chunkObj, done);
+      }
+    } else if (res.status === 401) {
+      console.error("Unauthorized");
+      callbacks?.onError(new Error("Unauthorized"), res.status);
+    } else {
+      console.error("Stream Error", res.body);
+      callbacks?.onError(new Error("Stream Error"), res.status);
+    }
+  } catch (err) {
+    console.error("NetWork Error", err);
+    callbacks?.onError(err as Error);
+  }
 }
 
 export async function requestChat(

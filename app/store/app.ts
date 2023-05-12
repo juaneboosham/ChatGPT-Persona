@@ -5,7 +5,7 @@ import { type ChatCompletionResponseMessage } from "openai";
 import {
   ControllerPool,
   requestChatStream,
-  requestNiceChat,
+  requestNiceApiStream,
   requestWithPrompt,
 } from "../requests";
 import { isMobileScreen, trimTopic } from "../utils";
@@ -13,7 +13,6 @@ import { isMobileScreen, trimTopic } from "../utils";
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
 import { ModelType, useAppConfig } from "./config";
-import { StaticImageData } from "next/image";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -285,9 +284,6 @@ export const useChatStore = create<ChatStore>()(
           model: useAppConfig.getState().modelConfig.model,
         });
 
-        // get recent messages
-        const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
         const sessionIndex = get().currentSessionIndex;
         const messageIndex = get().currentSession().messages.length + 1;
 
@@ -299,66 +295,48 @@ export const useChatStore = create<ChatStore>()(
 
         const currentSession = this.currentSession();
         const parentMessageId = currentSession.parentMessageId;
-        console.log("useAppConfig.getState()", useAppConfig.getState());
         const completionParams = useAppConfig.getState().modelConfig;
         const option = {
           parentMessageId,
           completionParams,
         };
-        const res = await requestNiceChat(content, option);
-        const newParentsMessageId = res.message.id ?? "";
-        get().updateCurrentSession((session) => {
-          session.parentMessageId = newParentsMessageId;
-        });
-        console.log(res, "nice chat api res");
-        botMessage.streaming = false;
-        botMessage.content = res.message.text;
-        get().onNewMessage(botMessage);
 
-        // make request
-        const oldRequestChatStream = () =>
-          requestChatStream(sendMessages, {
-            onMessage(content, done) {
-              // stream response
-              if (done) {
-                botMessage.streaming = false;
-                botMessage.content = content;
-                get().onNewMessage(botMessage);
-                ControllerPool.remove(
-                  sessionIndex,
-                  botMessage.id ?? messageIndex,
-                );
-              } else {
-                botMessage.content = content;
-                set(() => ({}));
-              }
-            },
-            onError(error, statusCode) {
-              if (statusCode === 401) {
-                botMessage.content = Locale.Error.Unauthorized;
-              } else if (!error.message.includes("aborted")) {
-                botMessage.content += "\n\n" + Locale.Store.Error;
-              }
+        requestNiceApiStream(content, option, {
+          onMessage(chunk, done) {
+            if (done) {
               botMessage.streaming = false;
-              userMessage.isError = true;
-              botMessage.isError = true;
+              botMessage.content = chunk.text;
+              get().onNewMessage(botMessage);
+              const newParentsMessageId = chunk.id ?? "";
+              get().updateCurrentSession((session) => {
+                session.parentMessageId = newParentsMessageId;
+              });
+            } else {
+              botMessage.content = chunk.text;
               set(() => ({}));
-              ControllerPool.remove(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-              );
-            },
-            onController(controller) {
-              // collect controller for stop/retry
-              ControllerPool.addController(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-                controller,
-              );
-            },
-            filterBot: !useAppConfig.getState().sendBotMessages,
-            modelConfig: useAppConfig.getState().modelConfig,
-          });
+            }
+          },
+          onError(error, statusCode) {
+            if (statusCode === 401) {
+              botMessage.content = Locale.Error.Unauthorized;
+            } else if (!error.message.includes("aborted")) {
+              botMessage.content += "\n\n" + Locale.Store.Error;
+            }
+            botMessage.streaming = false;
+            userMessage.isError = true;
+            botMessage.isError = true;
+            set(() => ({}));
+            ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ControllerPool.addController(
+              sessionIndex,
+              botMessage.id ?? messageIndex,
+              controller,
+            );
+          },
+        });
       },
 
       getMemoryPrompt() {
