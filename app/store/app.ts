@@ -295,15 +295,11 @@ export const useChatStore = create<ChatStore>()(
         });
 
         const currentSession = this.currentSession();
-        const parentMessageId = currentSession.parentMessageId;
-        const conversationId = currentSession.conversationId;
-        const completionParams = useAppConfig.getState().modelConfig;
         const option = {
-          parentMessageId,
-          completionParams,
-          conversationId,
+          parentMessageId: currentSession.conversationId,
+          completionParams: useAppConfig.getState().modelConfig,
+          conversationId: currentSession.conversationId,
         };
-
         requestNiceApiStream(content, option, {
           onMessage(chunk, done) {
             if (done) {
@@ -321,7 +317,6 @@ export const useChatStore = create<ChatStore>()(
               });
             } else {
               botMessage.content = chunk.text;
-              console.log("botMessage.content", botMessage.content);
               set(() => ({}));
             }
           },
@@ -329,7 +324,8 @@ export const useChatStore = create<ChatStore>()(
             if (statusCode === 401) {
               botMessage.content = Locale.Error.Unauthorized;
             } else if (!error.message.includes("aborted")) {
-              botMessage.content += "\n\n" + Locale.Store.Error;
+              console.log("error", error.message);
+              botMessage.content += "\n\n" + error.message;
             }
             botMessage.streaming = false;
             userMessage.isError = true;

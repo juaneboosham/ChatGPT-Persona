@@ -5,12 +5,12 @@ import {
   ModelType,
   useAccessStore,
   useAppConfig,
-  useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
-import { niceApiOption } from "@/pages/api/typing";
+import { ChunkMessage, NiceApiOption } from "@/pages/api/typing";
 
 const TIME_OUT_MS = 60000;
+const SEPARATOR = "\n*";
 
 const makeRequestParam = (
   messages: Message[],
@@ -101,6 +101,7 @@ export async function requestNiceApiStream(
   const onMessage = callbacks.onMessage;
   const body = { prompt, option };
   try {
+    const decoder = new TextDecoder();
     const res = await fetch("/api/chatgpt-api-stream", {
       method: "POST",
       headers: {
@@ -113,7 +114,6 @@ export async function requestNiceApiStream(
     clearTimeout(reqTimeoutId);
 
     if (res.ok) {
-      const decoder = new TextDecoder();
       const reader = res?.body?.getReader();
       let done = false;
       let chunkObj;
@@ -133,19 +133,24 @@ export async function requestNiceApiStream(
 
         // There is no way to know how many chunks are received at a time, so only the last chunk is processed
         const receivedChunks = value
-          .split("\n*")
+          .split(SEPARATOR)
           .filter((chunk) => chunk !== "");
 
         chunkObj = JSON.parse(receivedChunks[receivedChunks.length - 1]);
-        // console.log("receive", chunkObj);
         onMessage(chunkObj, done);
       }
     } else if (res.status === 401) {
       console.error("Unauthorized");
       callbacks?.onError(new Error("Unauthorized"), res.status);
     } else {
-      console.error("Stream Error", res.body);
-      callbacks?.onError(new Error("Stream Error"), res.status);
+      const reader = res?.body?.getReader();
+      const content = await reader?.read();
+      const errorMessage = decoder.decode(content?.value, { stream: true });
+      console.error("Stream Error", errorMessage);
+      callbacks?.onError(
+        new Error("Stream Error\n" + errorMessage),
+        res.status,
+      );
     }
   } catch (err) {
     console.error("NetWork Error", err);
@@ -326,7 +331,7 @@ export async function requestWithPrompt(
   return res?.choices?.at(0)?.message?.content ?? "";
 }
 
-export async function requestNiceChat(prompt: string, option: niceApiOption) {
+export async function requestNiceChat(prompt: string, option: NiceApiOption) {
   try {
     const resFn = await requestNiceApi();
     const res = await resFn({ prompt, option });

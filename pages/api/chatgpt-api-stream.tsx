@@ -73,9 +73,8 @@ export default async function handler(
     console.log("successapi", apiResult);
   } catch (error) {
     console.error("[Chat Stream]", error);
-    res.write(
-      ["```json\n", JSON.stringify(error, null, "  "), "\n```"].join(""),
-    );
+    res.status(500);
+    res.write(["```\n", JSON.stringify(error, null, "  "), "\n```"].join(""));
   } finally {
     res.end();
   }
