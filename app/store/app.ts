@@ -48,7 +48,6 @@ export interface ChatStat {
 }
 
 export interface ChatSession {
-  parentMessageId?: string;
   id: number;
   topic: string;
   sendMemory: boolean;
@@ -59,6 +58,8 @@ export interface ChatSession {
   lastUpdate: string;
   lastSummarizeIndex: number;
   avatarUrl?: string;
+  conversationId?: string;
+  parentMessageId?: string;
 }
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -295,10 +296,12 @@ export const useChatStore = create<ChatStore>()(
 
         const currentSession = this.currentSession();
         const parentMessageId = currentSession.parentMessageId;
+        const conversationId = currentSession.conversationId;
         const completionParams = useAppConfig.getState().modelConfig;
         const option = {
           parentMessageId,
           completionParams,
+          conversationId,
         };
 
         requestNiceApiStream(content, option, {
@@ -308,8 +311,13 @@ export const useChatStore = create<ChatStore>()(
               botMessage.content = chunk.text;
               get().onNewMessage(botMessage);
               const newParentsMessageId = chunk.id ?? "";
+              const newConversationId = chunk.conversationId ?? "";
               get().updateCurrentSession((session) => {
+                // https://github.com/transitive-bullshit/chatgpt-api
+                // need parentMessageId to track the conversation
+                // and ChatGPTUnofficialProxyAPI needs parentMessageId and conversationId in addiction
                 session.parentMessageId = newParentsMessageId;
+                session.conversationId = newConversationId;
               });
             } else {
               botMessage.content = chunk.text;

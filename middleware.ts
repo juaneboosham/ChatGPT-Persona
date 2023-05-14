@@ -51,9 +51,12 @@ export function middleware(req: NextRequest) {
   // inject api key
   if (!token) {
     const apiKey = serverConfig.apiKey;
+    const accessToken = serverConfig.accessToken;
     if (apiKey) {
       console.log("[Auth] set system token");
       req.headers.set("token", apiKey);
+    } else if (accessToken) {
+      req.headers.set("token", accessToken);
     } else {
       return NextResponse.json(
         {

@@ -2,19 +2,43 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from "chatgpt";
 
-let api: ChatGPTAPI;
+let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
+const OPENAI_ACCESS_TOKEN = process.env.OPENAI_ACCESS_TOKEN ?? "";
+const API_REVERSE_PROXY = process.env.API_REVERSE_PROXY ?? "";
 
-function initChatgptApi() {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
+function getApiType() {
+  let apiType: "ChatGPTAPI" | "ChatGPTUnofficialProxyAPI";
 
-  api = new ChatGPTAPI({
-    apiKey: OPENAI_API_KEY,
-    completionParams: {
-      model: "gpt-3.5-turbo",
-      temperature: 0.5,
-      top_p: 0.8,
-    },
-  });
+  if (OPENAI_API_KEY) {
+    apiType = "ChatGPTAPI";
+  } else if (OPENAI_ACCESS_TOKEN && API_REVERSE_PROXY) {
+    apiType = "ChatGPTUnofficialProxyAPI";
+  } else {
+    console.error("Please check your env");
+    throw new Error("Please check your env");
+  }
+
+  return apiType;
+}
+
+async function initChatgptApi() {
+  const apiType = getApiType();
+  if (apiType === "ChatGPTAPI") {
+    api = new ChatGPTAPI({
+      apiKey: OPENAI_API_KEY,
+      completionParams: {
+        model: "gpt-3.5-turbo",
+        temperature: 0.5,
+        top_p: 0.8,
+      },
+    });
+  } else if (apiType === "ChatGPTUnofficialProxyAPI") {
+    api = new ChatGPTUnofficialProxyAPI({
+      accessToken: OPENAI_ACCESS_TOKEN,
+      apiReverseProxyUrl: API_REVERSE_PROXY,
+    });
+  }
 }
 
 initChatgptApi();
@@ -26,6 +50,7 @@ export default async function handler(
   try {
     const prompt = req.body.prompt;
     const parentMessageId = req.body.option?.parentMessageId ?? "";
+    const conversationId = req.body.option?.conversationId ?? "";
     const completionParams = req.body.option?.completionParams;
     console.log("completionParams", completionParams);
     console.log("prompt", prompt);
@@ -35,6 +60,7 @@ export default async function handler(
 
     const apiResult = await api.sendMessage(prompt, {
       parentMessageId,
+      conversationId,
       completionParams,
       onProgress: (partialResponse) => {
         const chunk = firstChunk
