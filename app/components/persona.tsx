@@ -9,6 +9,8 @@ import { createMessage, createPresetMessage, useChatStore } from "../store";
 import { useMobileScreen } from "../utils";
 import styles from "./persona.module.scss";
 import Locale from "../locales";
+import { useNavigate } from "react-router-dom";
+import { Path } from "../constant";
 
 interface Persona {
   id: number;
@@ -18,15 +20,11 @@ interface Persona {
   sayHi: string;
 }
 
-interface PersonaProps {
-  actions?: JSX.Element[];
-  onClose?: () => void;
-}
-
 const personaIconWidth = 48;
 const personaIconHeight = 48;
 
-export function Persona(props: PersonaProps) {
+export function Persona() {
+  const navigate = useNavigate();
   const [curPersona, setCurPersona] = useState(personas?.[0]);
   const [shake, setShake] = useState(false);
   const chatStore = useChatStore();
@@ -34,7 +32,7 @@ export function Persona(props: PersonaProps) {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      props.onClose?.();
+      onClose();
     }
     if (e.key === "Enter") {
       choosePersona();
@@ -116,11 +114,13 @@ export function Persona(props: PersonaProps) {
     chatStore.onUserInput(persona.presetContent, true);
   };
 
+  const onClose = () => navigate(Path.Home);
+
   const choosePersona = () => {
     setShake(true);
     setTimeout(() => {
       newPresetSession(curPersona);
-      props.onClose?.();
+      onClose();
     }, 500);
   };
 
@@ -134,7 +134,7 @@ export function Persona(props: PersonaProps) {
   return (
     <div id="persona" className="modal-mask">
       <div className={styles["persona-wrapper"]}>
-        <div className={styles["escape-btn"]} onClick={() => props.onClose?.()}>
+        <div className={styles["escape-btn"]} onClick={onClose}>
           <Image
             src={escImg}
             alt="Picture of the author"

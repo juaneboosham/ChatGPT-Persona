@@ -84,7 +84,6 @@ export function SideBar(props: { className?: string }) {
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-  const [showPeasonaModal, setShowPeasonaModal] = useState(false);
   const [newSessionOpen, setNewSessionOpen] = useState(false);
 
   return (
@@ -142,7 +141,7 @@ export function SideBar(props: { className?: string }) {
                     icon={<AddIcon />}
                     text={shouldNarrow ? undefined : Locale.Home.NewPeasona}
                     onClick={() => {
-                      setShowPeasonaModal(true);
+                      navigate(Path.Persona);
                       setNewSessionOpen(false);
                     }}
                     shadow
@@ -181,9 +180,6 @@ export function SideBar(props: { className?: string }) {
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}
       ></div>
-      {showPeasonaModal && (
-        <Persona onClose={() => setShowPeasonaModal(false)} />
-      )}
     </div>
   );
 }

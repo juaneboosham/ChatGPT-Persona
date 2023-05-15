@@ -24,6 +24,7 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
+import { Persona } from "./persona";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -95,6 +96,7 @@ function WideScreen() {
           <Route path={Path.Home} element={<Chat />} />
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
+          <Route path={Path.Persona} element={<Persona />} />
         </Routes>
       </div>
     </div>
