@@ -311,6 +311,7 @@ function PromptToast(props: {
 
 function useSubmitHandler() {
   const config = useAppConfig();
+  const chatStore = useChatStore();
   const submitKey = config.submitKey;
 
   const shouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -529,6 +530,7 @@ export function Chat() {
 
   // submit user input
   const onUserSubmit = () => {
+    if (chatStore.isStreaming()) return;
     if (userInput.length <= 0) return;
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));

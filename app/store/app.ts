@@ -116,7 +116,7 @@ interface ChatStore {
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (content: string, isPreset?: boolean) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -128,6 +128,7 @@ interface ChatStore {
   resetSession: () => void;
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
+  isStreaming: () => boolean;
 
   clearAllData: () => void;
 }
@@ -272,11 +273,18 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
-        const userMessage: Message = createMessage({
-          role: "user",
-          content,
-        });
+      async onUserInput(content, isPreset = false) {
+        let userMessage: Message;
+
+        userMessage = isPreset
+          ? createPresetMessage({
+              role: "user",
+              content,
+            })
+          : createMessage({
+              role: "user",
+              content,
+            });
 
         const botMessage: Message = createMessage({
           role: "assistant",
@@ -296,7 +304,7 @@ export const useChatStore = create<ChatStore>()(
 
         const currentSession = this.currentSession();
         const option = {
-          parentMessageId: currentSession.conversationId,
+          parentMessageId: currentSession.parentMessageId,
           completionParams: useAppConfig.getState().modelConfig,
           conversationId: currentSession.conversationId,
         };
@@ -352,6 +360,12 @@ export const useChatStore = create<ChatStore>()(
           content: Locale.Store.Prompt.History(session.memoryPrompt),
           date: "",
         } as Message;
+      },
+
+      isStreaming() {
+        const session = get().currentSession();
+
+        return !!session.messages[session.messages.length - 1].streaming;
       },
 
       getMessagesWithMemory() {

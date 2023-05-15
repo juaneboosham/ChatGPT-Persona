@@ -98,20 +98,22 @@ export function Persona(props: PersonaProps) {
   }, [curPersona]);
 
   const newPresetSession = (persona: Persona) => {
-    const presetUserMessage = createPresetMessage({
-      role: "user",
-      content: persona.presetContent,
-    });
+    // const presetUserMessage = createPresetMessage({
+    //   role: "user",
+    //   content: persona.presetContent,
+    // });
     const botSayHiMessage = createMessage({
       role: "assistant",
       content: persona.sayHi,
     });
-    const presetMessages = [presetUserMessage, botSayHiMessage];
+    // const presetMessages = [presetUserMessage, botSayHiMessage];
+    const presetMessages = [botSayHiMessage];
     chatStore.newPresetSession(
       persona.avatarUrl,
       presetMessages,
       persona.persona,
     );
+    chatStore.onUserInput(persona.presetContent, true);
   };
 
   const choosePersona = () => {

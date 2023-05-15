@@ -54,6 +54,8 @@ export default async function handler(
     const completionParams = req.body.option?.completionParams;
     console.log("completionParams", completionParams);
     console.log("prompt", prompt);
+    console.log("parentMessageId", parentMessageId);
+    console.log("conversationId", conversationId);
     res.setHeader("Content-type", "application/octet-stream");
     res.setHeader("Transfer-Encoding", "chunked");
     let firstChunk = true;
