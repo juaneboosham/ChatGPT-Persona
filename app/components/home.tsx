@@ -116,6 +116,7 @@ function MobileScreen() {
           <Route path={Path.Home} element={null} />
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
+          <Route path={Path.Persona} element={<Persona />} />
         </Routes>
       </div>
     </div>
