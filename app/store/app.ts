@@ -364,8 +364,9 @@ export const useChatStore = create<ChatStore>()(
 
       isStreaming() {
         const session = get().currentSession();
-
-        return !!session.messages[session.messages.length - 1].streaming;
+        if (session.messages.length === 0) return false;
+        const lastMessage = session.messages[session.messages.length - 1];
+        return !!lastMessage.streaming;
       },
 
       getMessagesWithMemory() {

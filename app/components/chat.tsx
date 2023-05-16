@@ -99,6 +99,7 @@ export function Avatar(props: {
             <Image
               src={BotAvatar}
               alt="Picture of the author"
+              priority={true}
               width={48}
               height={48}
             />
