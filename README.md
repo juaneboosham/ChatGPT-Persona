@@ -30,7 +30,7 @@
 
 警告：方式2使用accessToken虽然免费但不够稳定，而且需要使用反向代理。可以自建代理或使用的是公共的[社区代理](https://github.com/transitive-bullshit/chatgpt-api#reverse-proxy)，使用公共代理时，需要注意accessToken会暴露给第三方代理，需要自行考虑风险。
 
-[社区代理](https://github.com/transitive-bullshit/chatgpt-api#reverse-proxy)目前(https://ai.fakeopen.com/api/conversation)仍然可用，但不确定一直可以稳定使用。
+[社区代理](https://github.com/transitive-bullshit/chatgpt-api#reverse-proxy)目前`https://ai.fakeopen.com/api/conversation`仍然可用，但不确定一直可以稳定使用。
 
 ## 🐣 Demo
 
