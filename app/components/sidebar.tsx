@@ -93,7 +93,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Peasona</div>
+        <div className={styles["sidebar-title"]}>ChatGPT Persona</div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
@@ -139,7 +139,7 @@ export function SideBar(props: { className?: string }) {
                   <IconButton
                     className={styles["icon-btn"]}
                     icon={<AddIcon />}
-                    text={shouldNarrow ? undefined : Locale.Home.NewPeasona}
+                    text={shouldNarrow ? undefined : Locale.Home.NewPersona}
                     onClick={() => {
                       navigate(Path.Persona);
                       setNewSessionOpen(false);

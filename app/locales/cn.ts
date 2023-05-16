@@ -47,7 +47,7 @@ const cn = {
   },
   Home: {
     NewChat: "新的聊天",
-    NewPeasona: "角色",
+    NewPersona: "角色",
     EmptyChat: "新的空白聊天",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",

@@ -49,7 +49,7 @@ const tw: LocaleType = {
   Home: {
     EmptyChat: "Empty Chat",
     NewChat: "New Chat",
-    NewPeasona: "Peasona",
+    NewPersona: "Persona",
     DeleteChat: "Confirm to delete the selected conversation?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
